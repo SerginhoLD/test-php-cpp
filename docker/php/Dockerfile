@@ -6,10 +6,16 @@ FROM php:8.2-fpm-alpine3.17
 
 RUN apk add --no-cache bash shadow git linux-headers
 
-#RUN
+
+RUN apk add --no-cache g++ make
+RUN git clone --branch v3.0.0 https://github.com/fast-debug/PHP-CPP /tmp/php-cpp \
+    && cd /tmp/php-cpp \
+    && make \
+    && make install \
+    && rm -rf /tmp/php-cpp
+
 
 WORKDIR /var/www
-
 ENV DOCKER_APP_UID=1000
 RUN usermod -u $DOCKER_APP_UID www-data
 USER www-data
