@@ -1,7 +1,5 @@
 #include <iostream>
 #include <phpcpp.h>
-//#include <opencv2/core/core.hpp>
-//#include <opencv2/highgui/highgui.hpp>
 #include <opencv2/opencv.hpp>
 
 void sld_func()
@@ -23,6 +21,7 @@ public:
     void __construct(Php::Parameters &params)
     {
         _path = params[0];
+        _image = cv::imread(_path);
     }
 
     Php::Value getPath()
@@ -32,8 +31,33 @@ public:
 
     Php::Value getWidth()
     {
-        _image = cv::imread(_path);
+        return _image.size().width;
+    }
+
+    Php::Value getHeight()
+    {
         return _image.size().height;
+    }
+
+    Php::Value thumbnail(Php::Parameters &params)
+    {
+        Php::Value path = params[0];
+        int width = params[1];
+        int height = params[2];
+        double factor = 1.0;
+
+        if (width >= height) {
+            factor = 1.0 / _image.size().width * width;
+        } else {
+            factor = 1.0 / _image.size().height * height;
+        }
+
+        cv::Mat r;
+        cv::resize(_image, r, cv::Size(), factor, factor, cv::INTER_AREA);
+        imwrite(path, r);
+
+        //sld_opencv *obj = new sld_opencv(path);
+        return Php::Object("SerginhoLD\\OpenCV", path);
     }
 };
 
@@ -68,6 +92,8 @@ extern "C" {
         sld_opencv_class.method<&sld_opencv::__construct>("__construct");
         sld_opencv_class.method<&sld_opencv::getPath>("getPath");
         sld_opencv_class.method<&sld_opencv::getWidth>("getWidth");
+        sld_opencv_class.method<&sld_opencv::getHeight>("getHeight");
+        sld_opencv_class.method<&sld_opencv::thumbnail>("thumbnail");
 
         space.add(std::move(sld_opencv_class));
 
