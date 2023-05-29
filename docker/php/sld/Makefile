@@ -88,6 +88,7 @@ LINKER				=	g++
 COMPILER_FLAGS		=	-Wall -c -O2 -std=c++11 -fpic -o
 LINKER_FLAGS		=	-shared
 LINKER_DEPENDENCIES	=	-lphpcpp
+COMPILER_LIBS	 	= 	`pkg-config --cflags --libs opencv4`
 
 
 #
@@ -121,10 +122,10 @@ OBJECTS				=	$(SOURCES:%.cpp=%.o)
 all:					${OBJECTS} ${EXTENSION}
 
 ${EXTENSION}:			${OBJECTS}
-						${LINKER} ${LINKER_FLAGS} -o $@ ${OBJECTS} ${LINKER_DEPENDENCIES}
+						${LINKER} ${LINKER_FLAGS} -o $@ ${OBJECTS} ${LINKER_DEPENDENCIES} ${COMPILER_LIBS}
 
 ${OBJECTS}:
-						${COMPILER} ${COMPILER_FLAGS} $@ ${@:%.o=%.cpp}
+						${COMPILER} ${COMPILER_FLAGS} $@ ${@:%.o=%.cpp} ${COMPILER_LIBS}
 
 install:
 						${CP} ${EXTENSION} ${EXTENSION_DIR}
