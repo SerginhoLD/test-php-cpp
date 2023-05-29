@@ -1,3 +1,4 @@
 <?php
 
-echo 'hw';
+// Test cpp function
+\SerginhoLD\func();
