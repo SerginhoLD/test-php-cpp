@@ -22,6 +22,7 @@ public:
     {
         _path = params[0];
         _image = cv::imread(_path);
+        // https://docs.opencv.org/3.4/d4/da8/group__imgcodecs.html#ga288b8b3da0892bd651fce07b3bbd3a56
     }
 
     Php::Value getPath()
@@ -52,12 +53,13 @@ public:
             factor = 1.0 / _image.size().height * height;
         }
 
+        // https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html#ga47a974309e9102f5f08231edc7e7529d
         cv::Mat r;
         cv::resize(_image, r, cv::Size(), factor, factor, cv::INTER_AREA);
         imwrite(path, r);
 
-        //sld_opencv *obj = new sld_opencv(path);
         return Php::Object("SerginhoLD\\OpenCV", path);
+        // https://www.php-cpp.com/documentation/variables
     }
 };
 

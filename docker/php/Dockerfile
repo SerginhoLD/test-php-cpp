@@ -10,7 +10,7 @@ RUN apk add --no-cache bash shadow git linux-headers
 # cpp
 RUN apk add --no-cache g++ make cmake pkgconfig
 
-# INSTALL OPENCV
+# INSTALL OPENCV https://docs.opencv.org/4.7.0/d7/d9f/tutorial_linux_install.html
 RUN git clone --branch 4.7.0 https://github.com/opencv/opencv /tmp/opencv \
     && mkdir -p /tmp/opencv/build \
     && cd /tmp/opencv/build \
@@ -31,6 +31,11 @@ COPY ./sld /tmp/sld
 RUN cd /tmp/sld  \
     && make \
     && make install
+
+# TEST GD
+RUN apk add --no-cache zlib-dev libpng-dev jpeg-dev \
+    && docker-php-ext-configure gd --with-jpeg \
+    && docker-php-ext-install gd
 
 WORKDIR /var/www
 ENV DOCKER_APP_UID=1000
